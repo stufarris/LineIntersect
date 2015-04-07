@@ -18,6 +18,7 @@ void printSegment(Segment* s);
 //}
 int main()
 {
+	cout << "test";
 	Segment *s1 = new Segment(1.0,0.0,2.0,2.0);
 	Segment *s2 = new Segment(1.0,5.0,2.0,2.0);
     int choice;
