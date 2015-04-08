@@ -34,7 +34,9 @@ class avlTree
         avl_node *lr_rotation(avl_node *);
         avl_node *rl_rotation(avl_node *);
         avl_node* balance(avl_node *);
-        avl_node* insert(avl_node *, Segment*);
+        avl_node* insert(avl_node *, Segment*, double);
+		bool compare(Segment*, Segment*, double);
+		avl_node* findSegment(Segment*);
         void display(avl_node *, int);
         void inorder(avl_node *);
         void preorder(avl_node *);
@@ -204,25 +206,27 @@ avl_node *avlTree::balance(avl_node *temp)
 /*
  * Insert Element into the tree
  */
-avl_node *avlTree::insert(avl_node *root, Segment* seg)
+avl_node *avlTree::insert(avl_node *root, Segment* seg, double xValue)
 {
 	double value = seg->leftPoint->y;
+	//s = seg;
     if (root == NULL)
     {
         root = new avl_node;
+		root->s = seg;
         root->data = value;
         root->left = NULL;
         root->right = NULL;
         return root;
     }
-    else if (value < root->data)
+    else if (compare(seg,root->s,xValue))
     {
-        root->left = insert(root->left, seg);
+        root->left = insert(root->left, seg,xValue);
         root = balance (root);
     }
-    else if (value >= root->data)
+    else if (!compare(seg,root->s,xValue))
     {
-        root->right = insert(root->right, seg);
+        root->right = insert(root->right, seg,xValue);
         root = balance (root);
     }
     return root;
@@ -242,7 +246,8 @@ void avlTree::display(avl_node *ptr, int level)
         cout<<"Root -> ";
         for (i = 0; i < level && ptr != root; i++)
             cout<<"        ";
-        cout<<ptr->data;
+        //cout<<ptr->s->;
+		cout << "(" << ptr->s->leftPoint->x << "," << ptr->s->leftPoint->y << ")-(" << ptr->s->rightPoint->x << "," << ptr->s->rightPoint->x << ")" << endl;
         display(ptr->left, level + 1);
     }
 }
@@ -281,4 +286,17 @@ void avlTree::postorder(avl_node *tree)
     postorder ( tree ->left );
     postorder ( tree ->right );
     cout<<tree->data<<"  ";
+}
+
+bool avlTree::compare(Segment* s1, Segment* s2, double xValue){
+	double yValue1 = (s1->rightPoint->y - s1->leftPoint->y)/(s1->rightPoint->x - s1->leftPoint->x)*xValue + s1->leftPoint->y - (s1->rightPoint->y - s1->leftPoint->y)/(s1->rightPoint->x - s1->leftPoint->x)*s1->leftPoint->x;
+	double yValue2 = (s2->rightPoint->y - s2->leftPoint->y)/(s2->rightPoint->x - s2->leftPoint->x)*xValue + s2->leftPoint->y - (s2->rightPoint->y - s2->leftPoint->y)/(s2->rightPoint->x - s2->leftPoint->x)*s2->leftPoint->x;
+	//cout << yValue1 << endl;
+	//cout << yValue2 << endl;
+	if(yValue1 >= yValue2){
+		return 0;
+	}
+	else{
+		return 1;
+	}
 }
