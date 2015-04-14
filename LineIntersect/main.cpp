@@ -6,6 +6,7 @@
 using namespace std;
 
 void printSegment(Segment* s);
+void generateRandomNodes(int numSegments, avlTree*, double xValue);
 
 //int main(){
 
@@ -18,17 +19,14 @@ void printSegment(Segment* s);
 //}
 int main()
 {
-	cout << "test";
-	Segment *s1 = new Segment(0.0,0.0,5.0,0.0);
-	Segment *s2 = new Segment(1.0,1.0,6.0,1.0);
-	Segment *s3 = new Segment(2.0,2.0,7.0,2.0);
-    int choice;
-    avlTree avl;
-	root = avl.insert(root, s1, 0.0);
-	root = avl.insert(root, s2, 1.0);
-	root = avl.insert(root, s3, 2.0); 
-	cout<<"Balanced AVL Tree:"<<endl;
-    avl.display(root, 1);
+	cout << "test" << endl;
+
+	avlTree avl;
+	avlTree *currentAVL = &avl;
+	generateRandomNodes(10, currentAVL, 2.0);
+
+	cout << "Balanced AVL Tree:" << endl;
+	avl.display(root, 1);
 
     //while (1)
     //{
@@ -90,3 +88,10 @@ int main()
 void printSegment(Segment* s){
 	cout << "(" << s->leftPoint->x << "," << s->leftPoint->y << ")-(" << s->rightPoint->x << "," << s->rightPoint->x << ")" << endl;
 };
+
+void generateRandomNodes(int numSegments, avlTree* currentAVL, double xValue){
+	srand(time(NULL));
+	for (int i = 0; i < numSegments; i++){
+		currentAVL->generateRandomNode(xValue);
+	}
+}

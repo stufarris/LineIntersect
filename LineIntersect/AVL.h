@@ -7,6 +7,8 @@
 #include<cstdlib>
 #include<sstream>
 #include<algorithm>
+#include<cstdlib>
+#include<ctime>
 #define pow2(n) (1 << (n))
 using namespace std;
  
@@ -36,7 +38,8 @@ class avlTree
         avl_node* balance(avl_node *);
         avl_node* insert(avl_node *, Segment*, double);
 		bool compare(Segment*, Segment*, double);
-		avl_node* findSegment(Segment*);
+		avl_node* findSegment(avl_node*, Segment*, double);
+		void generateRandomNode(double);
         void display(avl_node *, int);
         void inorder(avl_node *);
         void preorder(avl_node *);
@@ -299,4 +302,29 @@ bool avlTree::compare(Segment* s1, Segment* s2, double xValue){
 	else{
 		return 1;
 	}
+}
+
+avl_node* avlTree::findSegment(avl_node *root, Segment* seg, double xValue){
+	
+	if (root == NULL){
+		cout << "Not found";
+		return NULL;
+	}
+	else if (root->s == seg){
+		return root;
+	}
+	else if (!compare(seg, root->s, xValue)){
+		return findSegment(root->right, seg, xValue);
+	}
+	else if (compare(seg, root->s, xValue)){
+		return findSegment(root->left, seg, xValue);
+	}
+
+}
+
+void avlTree::generateRandomNode(double xValue){
+	double r = rand() % 100;
+	cout << r << endl;
+	root = insert(root, new Segment(0.0, r, 5.0, r) , xValue);
+	cout << "inserted" << endl;
 }
