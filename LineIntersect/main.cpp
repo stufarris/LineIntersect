@@ -22,9 +22,29 @@ int main()
 	cout << "test" << endl;
 
 	avlTree avl;
-	avlTree *currentAVL = &avl;
-	generateRandomNodes(10, currentAVL, 2.0);
+	//avlTree *currentAVL = &avl;
+	//generateRandomNodes(10, currentAVL, 2.0);
 
+	Segment *s1 = new Segment(0.0,0.0,5.0,0.0);
+	Segment *s2 = new Segment(0.0, 1.0, 5.0, 1.0);
+	Segment *s3 = new Segment(0.0, 2.0, 5.0, 2.0);
+	Segment *s4 = new Segment(0.0, 3.0, 5.0, 3.0);
+	Segment *s5 = new Segment(0.0, 4.0, 5.0, 4.0);
+	Segment *s6 = new Segment(0.0, 5.0, 5.0, 5.0);
+	Segment *s7 = new Segment(0.0, 6.0, 5.0, 6.0);
+
+	root = avl.insert(root, s1, 2.0);
+	root = avl.insert(root, s2, 2.0);
+	root = avl.insert(root, s3, 2.0);
+	root = avl.insert(root, s4, 2.0);
+	root = avl.insert(root, s5, 2.0);
+	root = avl.insert(root, s6, 2.0);
+	root = avl.insert(root, s7, 2.0);
+
+	cout << "Balanced AVL Tree:" << endl;
+	avl.display(root, 1);
+
+	avl.deleteSegment(s4, 2.0);
 	cout << "Balanced AVL Tree:" << endl;
 	avl.display(root, 1);
 

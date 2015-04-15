@@ -39,6 +39,7 @@ class avlTree
         avl_node* insert(avl_node *, Segment*, double);
 		bool compare(Segment*, Segment*, double);
 		avl_node* findSegment(avl_node*, Segment*, double);
+		void deleteSegment(Segment*, double);
 		void generateRandomNode(double);
         void display(avl_node *, int);
         void inorder(avl_node *);
@@ -50,66 +51,6 @@ class avlTree
         }
 };
  
-/*
- * Main Contains Menu
- */
-//int main()
-//{
-//    int choice, item;
-//    avlTree avl;
-//    while (1)
-//    {
-//        cout<<"\n---------------------"<<endl;
-//        cout<<"AVL Tree Implementation"<<endl;
-//        cout<<"\n---------------------"<<endl;
-//        cout<<"1.Insert Element into the tree"<<endl;
-//        cout<<"2.Display Balanced AVL Tree"<<endl;
-//        cout<<"3.InOrder traversal"<<endl;
-//        cout<<"4.PreOrder traversal"<<endl;
-//        cout<<"5.PostOrder traversal"<<endl;
-//        cout<<"6.Exit"<<endl;
-//        cout<<"Enter your Choice: ";
-//        cin>>choice;
-//        switch(choice)
-//        {
-//        case 1:
-//            cout<<"Enter value to be inserted: ";
-//            cin>>item;
-//            root = avl.insert(root, item);
-//            break;
-//        case 2:
-//            if (root == NULL)
-//            {
-//                cout<<"Tree is Empty"<<endl;
-//                continue;
-//            }
-//            cout<<"Balanced AVL Tree:"<<endl;
-//            avl.display(root, 1);
-//            break;
-//        case 3:
-//            cout<<"Inorder Traversal:"<<endl;
-//            avl.inorder(root);
-//            cout<<endl;
-//            break;
-//        case 4:
-//            cout<<"Preorder Traversal:"<<endl;
-//            avl.preorder(root);
-//            cout<<endl;
-//            break;
-//        case 5:
-//            cout<<"Postorder Traversal:"<<endl;
-//            avl.postorder(root);    
-//            cout<<endl;
-//            break;
-//        case 6:
-//            exit(1);    
-//            break;
-//        default:
-//            cout<<"Wrong Choice"<<endl;
-//        }
-//    }
-//    return 0;
-//}
  
 /*
  * Height of AVL Tree
@@ -250,7 +191,7 @@ void avlTree::display(avl_node *ptr, int level)
         for (i = 0; i < level && ptr != root; i++)
             cout<<"        ";
         //cout<<ptr->s->;
-		cout << "(" << ptr->s->leftPoint->x << "," << ptr->s->leftPoint->y << ")-(" << ptr->s->rightPoint->x << "," << ptr->s->rightPoint->x << ")" << endl;
+		cout << "(" << ptr->s->leftPoint->x << "," << ptr->s->leftPoint->y << ")-(" << ptr->s->rightPoint->x << "," << ptr->s->rightPoint->y << ")" << endl;
         display(ptr->left, level + 1);
     }
 }
@@ -320,6 +261,42 @@ avl_node* avlTree::findSegment(avl_node *root, Segment* seg, double xValue){
 		return findSegment(root->left, seg, xValue);
 	}
 
+}
+
+void avlTree::deleteSegment(Segment* seg, double xValue){
+	avl_node* nodeToDelete = findSegment(root, seg, xValue);
+
+	//no children
+	if (nodeToDelete->left == NULL && nodeToDelete->right == NULL){
+		delete nodeToDelete;
+		nodeToDelete = NULL;
+	}
+	//one child
+	else if (nodeToDelete->left != NULL && nodeToDelete->right == NULL){
+		avl_node* temp = nodeToDelete;
+		nodeToDelete = nodeToDelete->left;
+		balance(nodeToDelete);
+		delete temp;
+		temp = NULL;
+	}
+	else if (nodeToDelete->right != NULL && nodeToDelete->left == NULL){
+		avl_node* temp = nodeToDelete;
+		nodeToDelete = nodeToDelete->right;
+		balance(nodeToDelete);
+		delete temp;
+		temp = NULL;
+	}	
+	//two children
+	else if (nodeToDelete->right != NULL && nodeToDelete->left != NULL){
+		avl_node* temp = nodeToDelete->right;
+		while (temp->left != NULL){
+			temp = temp->left;
+		}
+		nodeToDelete->s = temp->s;
+		delete temp;
+		temp = NULL;
+		balance(nodeToDelete);
+	}
 }
 
 void avlTree::generateRandomNode(double xValue){
