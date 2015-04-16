@@ -23,4 +23,12 @@ public:
 		type = END_POINT;
 		parentSegment = parent;
 	}
+	Point(double xInit, double yInit, Segment* parent1, Segment* parent2){
+		x = xInit;
+		y = yInit;
+
+		type = INTERSECTION;
+		intersectingSegment1 = parent1;
+		intersectingSegment2 = parent2;
+	}
 };
