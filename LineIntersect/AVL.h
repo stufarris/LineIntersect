@@ -40,6 +40,7 @@ class avlTree
 		bool compare(Segment*, Segment*, double);
 		avl_node* findSegment(avl_node*, Segment*, double);
 		void deleteSegment(Segment*, double);
+		void deleteSegmentInternal(avl_node*, bool, double xValue);
 		void generateRandomNode(double);
         void display(avl_node *, int);
         void inorder(avl_node *);
@@ -264,8 +265,36 @@ avl_node* avlTree::findSegment(avl_node *root, Segment* seg, double xValue){
 }
 
 void avlTree::deleteSegment(Segment* seg, double xValue){
+	avl_node* parentOfDeleteNode = root;
+	while (true){
+		if (parentOfDeleteNode == NULL){
+			cout << "not found" << endl;
+			return;
+		}
+		else if (parentOfDeleteNode == root && parentOfDeleteNode->s == seg){
+			delete parentOfDeleteNode;
+			parentOfDeleteNode = NULL;
+			root = NULL;
+			return;
+		}
+		else if (parentOfDeleteNode->left != NULL && parentOfDeleteNode->left->s == seg){
+			deleteSegmentInternal(parentOfDeleteNode, 0, xValue);
+			return;
+		}
+		else if (parentOfDeleteNode->right != NULL && parentOfDeleteNode->right->s == seg){
+			deleteSegmentInternal(parentOfDeleteNode, 1, xValue);
+			return;
+		}
+		else if (compare(seg, root->s, xValue)){
+			parentOfDeleteNode = parentOfDeleteNode->left;
+		}
+		else if (!compare(seg, root->s, xValue)){
+			parentOfDeleteNode = parentOfDeleteNode->right;
+		}
+	}
+	/*
 	avl_node* nodeToDelete = findSegment(root, seg, xValue);
-
+		
 	//no children
 	if (nodeToDelete->left == NULL && nodeToDelete->right == NULL){
 		delete nodeToDelete;
@@ -296,7 +325,62 @@ void avlTree::deleteSegment(Segment* seg, double xValue){
 		delete temp;
 		temp = NULL;
 		balance(nodeToDelete);
+	}*/
+}
+
+void avlTree::deleteSegmentInternal(avl_node* parent, bool direction, double xValue){
+	//0 is left 1 is right
+	//left
+	if (!direction){
+		//no children
+		if (parent->left->left == NULL && parent->left->right == NULL){
+			delete parent->left;
+			parent->left = NULL;
+			parent = balance(parent);
+		}
+		//one child to left
+		else if (parent->left->left != NULL && parent->left->right == NULL){
+			avl_node* temp = parent->left;
+			parent->left = parent->left->left;
+			parent = balance(parent);
+			delete temp;
+			temp = NULL;
+		}
+		//one child to right
+		else if (parent->left->right != NULL && parent->left->left == NULL){
+			avl_node* temp = parent->left;
+			parent->left = parent->left->right;
+			parent = balance(parent);
+			delete temp;
+			temp = NULL;
+		}
 	}
+	//right
+	else if (direction){
+		//no children
+		if (parent->right->left == NULL && parent->right->right == NULL){
+			delete parent->right;
+			parent->right = NULL;
+			parent = balance(parent);
+		}
+		//one child to left
+		else if (parent->right->left != NULL && parent->right->right == NULL){
+			avl_node* temp = parent->right;
+			parent->right = parent->right->left;
+			parent = balance(parent);
+			delete temp;
+			temp = NULL;
+		}
+		//one child to right
+		else if (parent->right->right != NULL && parent->right->left == NULL){
+			avl_node* temp = parent->right;
+			parent->right = parent->right->right;
+			parent = balance(parent);
+			delete temp;
+			temp = NULL;
+		}
+	}
+	return;
 }
 
 void avlTree::generateRandomNode(double xValue){
