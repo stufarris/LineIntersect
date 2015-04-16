@@ -1,7 +1,6 @@
 #include <iostream>
 #include <queue>  
 #include "AVL.h"
-//#include "compare.h"
 using namespace std;
 
 struct compare
@@ -14,7 +13,6 @@ struct compare
 };
 
 void printSegment(Segment* s);
-//void generateRandomSegments(int numSegments, priority_queue<Point*, vector<Point*>, struct compare>*);
 void generateRandomSegments(int numSegments, priority_queue<Point*, vector<Point*>, struct compare>&);
 void printQueue(priority_queue<Point*, vector<Point*>, struct compare>&);
 
@@ -26,8 +24,38 @@ int main()
 	priority_queue<Point*, vector<Point*>, compare>* pointQueuePointer = &pointQueue;
 	double sweepLine;
 
-	generateRandomSegments(10, pointQueue);
-	printQueue(pointQueue);
+	Segment *p0 = new Segment(0.0, 0.0, 5.0, 0.0);
+	Segment *p1 = new Segment(0.0, 1.0, 5.0, 1.0);
+	Segment *p2 = new Segment(0.0, 2.0, 5.0, 2.0);
+	/*Segment *p3 = new Segment(0.0, 3.0, 5.0, 3.0);
+	Segment *p4 = new Segment(0.0, 4.0, 5.0, 4.0);
+	Segment *p5 = new Segment(0.0, 5.0, 5.0, 5.0);
+	Segment *p6 = new Segment(0.0, 6.0, 5.0, 6.0);
+	Segment *p7 = new Segment(0.0, 7.0, 5.0, 7.0);
+	Segment *p8 = new Segment(0.0, 8.0, 5.0, 8.0);
+	Segment *p9 = new Segment(0.0, 9.0, 5.0, 9.0);*/
+
+	root = activeSegments.insert(root, p0, 2.0);
+	root = activeSegments.insert(root, p1, 2.0);
+	root = activeSegments.insert(root, p2, 2.0);
+	/*root = activeSegments.insert(root, p3, 2.0);
+	root = activeSegments.insert(root, p4, 2.0);
+	root = activeSegments.insert(root, p5, 2.0);
+	root = activeSegments.insert(root, p6, 2.0);
+	root = activeSegments.insert(root, p7, 2.0);
+	root = activeSegments.insert(root, p8, 2.0);
+	root = activeSegments.insert(root, p9, 2.0);*/
+
+	activeSegments.display(root, 1);
+
+	activeSegments.deleteSegment(p0, 2.0);
+	activeSegments.display(root, 1);
+	activeSegments.deleteSegment(p1, 2.0);
+	activeSegments.display(root, 1);
+
+
+	//generateRandomSegments(10, pointQueue);
+	//printQueue(pointQueue);
 
 	system("PAUSE");
     return 0;

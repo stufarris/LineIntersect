@@ -272,9 +272,39 @@ void avlTree::deleteSegment(Segment* seg, double xValue){
 			return;
 		}
 		else if (parentOfDeleteNode == root && parentOfDeleteNode->s == seg){
-			delete parentOfDeleteNode;
-			parentOfDeleteNode = NULL;
-			root = NULL;
+			if (parentOfDeleteNode->left == NULL && parentOfDeleteNode->right == NULL){
+				delete parentOfDeleteNode;
+				parentOfDeleteNode = NULL;
+				root = NULL;
+				return;
+			}
+			//one child to left
+			else if (parentOfDeleteNode->left != NULL && parentOfDeleteNode->right == NULL){
+				avl_node* temp = parentOfDeleteNode;
+				root = parentOfDeleteNode->left;
+				delete temp;
+				temp = NULL;
+				root = balance(root);
+			}
+			//one child to right
+			else if (parentOfDeleteNode->right != NULL && parentOfDeleteNode->left == NULL){
+				avl_node* temp = parentOfDeleteNode;
+				root = parentOfDeleteNode->right;
+				delete temp;
+				temp = NULL;
+				root = balance(root);
+			}
+			//two children
+			/*else if (parentOfDeleteNode->right != NULL && parentOfDeleteNode->left != NULL){
+				avl_node* temp = parentOfDeleteNode->right;
+				while (temp->left != NULL){
+					temp = temp->left;
+				}
+				root->s = temp->s;
+				root = balance(root);
+				delete temp;
+				temp = NULL;
+			}*/
 			return;
 		}
 		else if (parentOfDeleteNode->left != NULL && parentOfDeleteNode->left->s == seg){
@@ -335,6 +365,22 @@ void avlTree::deleteSegmentInternal(avl_node* parent, bool direction, double xVa
 			delete temp;
 			temp = NULL;
 		}
+		//two children
+		/*else if (parent->left->right != NULL && parent->left->left != NULL){
+			avl_node* temp = parent->left->right;
+			while (temp->left != NULL){
+				temp = temp->left;
+			}
+			parent->left->s = temp->s;
+			if (parent == root){
+				root = balance(parent);
+			}
+			else{
+				parent = balance(parent);
+			}
+			delete temp;
+			temp = NULL;
+		}*/
 	}
 	//right
 	else if (direction){
@@ -375,6 +421,22 @@ void avlTree::deleteSegmentInternal(avl_node* parent, bool direction, double xVa
 			delete temp;
 			temp = NULL;
 		}
+		//two children
+		/*else if (parent->right->right != NULL && parent->right->left != NULL){
+			avl_node* temp = parent->right->right;
+			while (temp->left != NULL){
+				temp = temp->left;
+			}
+			parent->right->s = temp->s;
+			if (parent == root){
+				root = balance(parent);
+			}
+			else{
+				parent = balance(parent);
+			}
+			delete temp;
+			temp = NULL;
+		}*/
 	}
 	return;
 }
