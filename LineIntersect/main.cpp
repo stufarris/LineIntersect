@@ -1,14 +1,8 @@
-//#include "Point.h"
-//#include "Segment.h"
 #include <iostream>
 #include <queue>  
 #include "AVL.h"
-
+//#include "compare.h"
 using namespace std;
-
-void printSegment(Segment* s);
-void generateRandomNodes(int numSegments, avlTree*, double xValue);
-void printQueue(priority_queue<Point*, vector<Point*>, compare>&);
 
 struct compare
 {
@@ -19,40 +13,51 @@ struct compare
 	}
 };
 
-//int main(){
+void printSegment(Segment* s);
+//void generateRandomSegments(int numSegments, priority_queue<Point*, vector<Point*>, struct compare>*);
+void generateRandomSegments(int numSegments, priority_queue<Point*, vector<Point*>, struct compare>&);
+void printQueue(priority_queue<Point*, vector<Point*>, struct compare>&);
 
-	//Segment *s1 = new Segment(1.0,1.0,2.0,2.0);
 
-	//printSegment(s1);
-	//system("PAUSE");
-	//return 0;
-
-//}
 int main()
 {
 	avlTree activeSegments;
 	priority_queue<Point*, vector<Point*>, compare> pointQueue;
-	
+	priority_queue<Point*, vector<Point*>, compare>* pointQueuePointer = &pointQueue;
+	double sweepLine;
+
+	generateRandomSegments(10, pointQueue);
+	printQueue(pointQueue);
 
 	system("PAUSE");
     return 0;
 }
 
-
 void printSegment(Segment* s){
-	cout << "(" << s->leftPoint->x << "," << s->leftPoint->y << ")-(" << s->rightPoint->x << "," << s->rightPoint->x << ")" << endl;
+	cout << "(" << s->leftPoint->x << "," << s->leftPoint->y << ")-(" << s->rightPoint->x << "," << s->rightPoint->y << ")" << endl;
 };
 
-void printQueue(priority_queue<Point*, vector<Point*>, compare>& priorityQ){
+void printQueue(priority_queue<Point*, vector<Point*>, struct compare>& priorityQ){
 	while (!priorityQ.empty()){
-		cout << "(" << priorityQ.top()->x << "," << priorityQ.top()->y << ")" << endl;
+		cout << "(" << priorityQ.top()->x << "," << priorityQ.top()->y << ") -->Segment ";
+		printSegment(priorityQ.top()->parentSegment);
 		priorityQ.pop();
 	}
+	return;
 }
 
-void generateRandomNodes(int numSegments, avlTree* currentAVL, double xValue){
+void generateRandomSegments(int numSegments, priority_queue<Point*, vector<Point*>, struct compare>& priorityQ){
 	srand(time(NULL));
+	Segment *temp;
+	double x1, x2, y1, y2;
 	for (int i = 0; i < numSegments; i++){
-		currentAVL->generateRandomNode(xValue);
+		x1 = rand() % 100;
+		x2 = rand() % 100;
+		y1 = rand() % 100;
+		y2 = rand() % 100;
+		temp = new Segment(x1, y1, x2, y2);
+		priorityQ.push(temp->leftPoint);
+		priorityQ.push(temp->rightPoint);
 	}
+	return;
 }

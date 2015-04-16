@@ -292,40 +292,6 @@ void avlTree::deleteSegment(Segment* seg, double xValue){
 			parentOfDeleteNode = parentOfDeleteNode->right;
 		}
 	}
-	/*
-	avl_node* nodeToDelete = findSegment(root, seg, xValue);
-		
-	//no children
-	if (nodeToDelete->left == NULL && nodeToDelete->right == NULL){
-		delete nodeToDelete;
-		nodeToDelete = NULL;
-	}
-	//one child
-	else if (nodeToDelete->left != NULL && nodeToDelete->right == NULL){
-		avl_node* temp = nodeToDelete;
-		nodeToDelete = nodeToDelete->left;
-		balance(nodeToDelete);
-		delete temp;
-		temp = NULL;
-	}
-	else if (nodeToDelete->right != NULL && nodeToDelete->left == NULL){
-		avl_node* temp = nodeToDelete;
-		nodeToDelete = nodeToDelete->right;
-		balance(nodeToDelete);
-		delete temp;
-		temp = NULL;
-	}	
-	//two children
-	else if (nodeToDelete->right != NULL && nodeToDelete->left != NULL){
-		avl_node* temp = nodeToDelete->right;
-		while (temp->left != NULL){
-			temp = temp->left;
-		}
-		nodeToDelete->s = temp->s;
-		delete temp;
-		temp = NULL;
-		balance(nodeToDelete);
-	}*/
 }
 
 void avlTree::deleteSegmentInternal(avl_node* parent, bool direction, double xValue){
