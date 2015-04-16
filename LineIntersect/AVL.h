@@ -336,13 +336,23 @@ void avlTree::deleteSegmentInternal(avl_node* parent, bool direction, double xVa
 		if (parent->left->left == NULL && parent->left->right == NULL){
 			delete parent->left;
 			parent->left = NULL;
-			parent = balance(parent);
+			if (parent == root){
+				root = balance(parent);
+			}
+			else{
+				parent = balance(parent);
+			}
 		}
 		//one child to left
 		else if (parent->left->left != NULL && parent->left->right == NULL){
 			avl_node* temp = parent->left;
 			parent->left = parent->left->left;
-			parent = balance(parent);
+			if (parent == root){
+				root = balance(parent);
+			}
+			else{
+				parent = balance(parent);
+			}
 			delete temp;
 			temp = NULL;
 		}
@@ -350,7 +360,12 @@ void avlTree::deleteSegmentInternal(avl_node* parent, bool direction, double xVa
 		else if (parent->left->right != NULL && parent->left->left == NULL){
 			avl_node* temp = parent->left;
 			parent->left = parent->left->right;
-			parent = balance(parent);
+			if (parent == root){
+				root = balance(parent);
+			}
+			else{
+				parent = balance(parent);
+			}
 			delete temp;
 			temp = NULL;
 		}
@@ -361,13 +376,23 @@ void avlTree::deleteSegmentInternal(avl_node* parent, bool direction, double xVa
 		if (parent->right->left == NULL && parent->right->right == NULL){
 			delete parent->right;
 			parent->right = NULL;
-			parent = balance(parent);
+			if (parent == root){
+				root = balance(parent);
+			}
+			else{
+				parent = balance(parent);
+			}
 		}
 		//one child to left
 		else if (parent->right->left != NULL && parent->right->right == NULL){
 			avl_node* temp = parent->right;
 			parent->right = parent->right->left;
-			parent = balance(parent);
+			if (parent == root){
+				root = balance(parent);
+			}
+			else{
+				parent = balance(parent);
+			}
 			delete temp;
 			temp = NULL;
 		}
@@ -375,7 +400,12 @@ void avlTree::deleteSegmentInternal(avl_node* parent, bool direction, double xVa
 		else if (parent->right->right != NULL && parent->right->left == NULL){
 			avl_node* temp = parent->right;
 			parent->right = parent->right->right;
-			parent = balance(parent);
+			if (parent == root){
+				root = balance(parent);
+			}
+			else{
+				parent = balance(parent);
+			}
 			delete temp;
 			temp = NULL;
 		}
