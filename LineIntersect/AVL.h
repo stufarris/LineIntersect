@@ -39,6 +39,7 @@ class avlTree
         avl_node* insert(avl_node *, Segment*, double);
 		bool compare(Segment*, Segment*, double);
 		avl_node* findSegment(avl_node*, Segment*, double);
+		avl_node* findSuccessor(avl_node*, Segment*, double);
 		void deleteSegment(Segment*, double);
 		void deleteSegmentInternal(avl_node*, bool, double xValue);
 		void generateRandomNode(double);
@@ -500,4 +501,22 @@ void avlTree::generateRandomNode(double xValue){
 	cout << r << endl;
 	root = insert(root, new Segment(0.0, r, 5.0, r) , xValue);
 	cout << "inserted" << endl;
+}
+
+avl_node* avlTree::findSuccessor(avl_node* root, Segment* seg, double xValue){
+	avl_node* baseNode = findSegment(root, seg, xValue);
+	avl_node* currentNode;
+	//has right tree
+	if (baseNode->right != NULL){
+		currentNode = baseNode->right;
+		while (currentNode->left != NULL){
+			currentNode = currentNode->left;
+		}
+		return currentNode;
+	}
+	//does not have right subtree
+	else{
+		//left child
+		//right child
+	}
 }
