@@ -40,6 +40,7 @@ class avlTree
 		bool compare(Segment*, Segment*, double);
 		avl_node* findSegment(avl_node*, Segment*, double);
 		avl_node* findSuccessor(avl_node*, Segment*, double);
+		avl_node* findPred(avl_node*, Segment*, double);
 		void deleteSegment(Segment*, double);
 		void deleteSegmentInternal(avl_node*, bool, double xValue);
 		void generateRandomNode(double);
@@ -553,7 +554,7 @@ avl_node* avlTree::findSuccessor(avl_node* root, Segment* seg, double xValue){
 		//is right child
 		else if (directions.back() == 'r'){
 			int size = directions.size();
-			int lastRight = NULL;
+			int lastRight = -1;
 			queue<char> directionsCopy = directions;
 			currentNode = root;
 			for (int i = 0; i < size - 1; i++){
@@ -562,10 +563,86 @@ avl_node* avlTree::findSuccessor(avl_node* root, Segment* seg, double xValue){
 				}
 				directionsCopy.pop();
 			}
-			if (lastRight == NULL){
+			if (lastRight < 0){
 				return NULL;
 			}
 			for (int j = 0; j < lastRight; j++){
+				if (directions.front() == 'r'){
+					currentNode = currentNode->right;
+				}
+				else if (directions.front() == 'l'){
+					currentNode = currentNode->left;
+				}
+				directions.pop();
+			}
+			return currentNode;
+		}
+	}
+}
+
+avl_node* avlTree::findPred(avl_node* root, Segment* seg, double xValue){
+	avl_node* baseNode = findSegment(root, seg, xValue);
+	avl_node* currentNode;
+	queue<char> directions;
+	//has left tree
+	if (baseNode->left != NULL){
+		currentNode = baseNode->left;
+		while (currentNode->right != NULL){
+			currentNode = currentNode->right;
+		}
+		return currentNode;
+	}
+	//does not have left subtree
+	else{
+		currentNode = root;
+		while (true){
+			if (currentNode == NULL){
+				cout << "not found";
+				break;
+			}
+			else if (currentNode->s == seg){
+				break;
+			}
+			else if (!compare(seg, currentNode->s, xValue)){
+				directions.push('r');
+				currentNode = currentNode->right;
+			}
+			else if (compare(seg, currentNode->s, xValue)){
+				directions.push('l');
+				currentNode = currentNode->left;
+			}
+		}
+		//is right child
+		if (directions.back() == 'r'){
+			int size = directions.size();
+			currentNode = root;
+			for (int i = 0; i < size - 1; i++){
+				if (directions.front() == 'r'){
+					currentNode = currentNode->right;
+				}
+				else if (directions.front() == 'l'){
+					currentNode = currentNode->left;
+				}
+				directions.pop();
+			}
+			return currentNode;
+		}
+		//is left child
+		else if (directions.back() == 'l'){
+			int size = directions.size();
+			int lastLeft = -1;
+			queue<char> directionsCopy = directions;
+			currentNode = root;
+			for (int i = 0; i < size - 1; i++){
+				if (directionsCopy.front() == 'r'){
+					lastLeft = i;
+				}
+				directionsCopy.pop();
+			}
+			if (lastLeft < 0){
+				return NULL;
+			}
+			for (int j = 0; j < lastLeft; j++){
 				if (directions.front() == 'r'){
 					currentNode = currentNode->right;
 				}

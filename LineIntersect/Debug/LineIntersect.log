@@ -1,16 +1,17 @@
-﻿Build started 4/26/2015 10:44:30 PM.
-     1>Project "Z:\CSCI 562\LineIntersect\LineIntersect\LineIntersect.vcxproj" on node 2 (Build target(s)).
+﻿Build started 4/26/2015 11:35:19 PM.
+     1>Project "C:\Users\Stuart\School\CSM Spring 15\CSCI 562\LineIntersect\LineIntersect\LineIntersect.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt main.cpp
          main.cpp
-     1>z:\csci 562\lineintersect\lineintersect\main.cpp(57): warning C4244: 'argument' : conversion from 'time_t' to 'unsigned int', possible loss of data
-     1>z:\csci 562\lineintersect\lineintersect\avl.h(266): warning C4715: 'avlTree::findSegment' : not all control paths return a value
-     1>z:\csci 562\lineintersect\lineintersect\avl.h(580): warning C4715: 'avlTree::findSuccessor' : not all control paths return a value
+     1>c:\users\stuart\school\csm spring 15\csci 562\lineintersect\lineintersect\main.cpp(57): warning C4244: 'argument' : conversion from 'time_t' to 'unsigned int', possible loss of data
+     1>c:\users\stuart\school\csm spring 15\csci 562\lineintersect\lineintersect\avl.h(267): warning C4715: 'avlTree::findSegment' : not all control paths return a value
+     1>c:\users\stuart\school\csm spring 15\csci 562\lineintersect\lineintersect\avl.h(581): warning C4715: 'avlTree::findSuccessor' : not all control paths return a value
+     1>c:\users\stuart\school\csm spring 15\csci 562\lineintersect\lineintersect\avl.h(657): warning C4715: 'avlTree::findPred' : not all control paths return a value
        Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"Z:\CSCI 562\LineIntersect\Debug\LineIntersect.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"Z:\CSCI 562\LineIntersect\Debug\LineIntersect.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"Z:\CSCI 562\LineIntersect\Debug\LineIntersect.lib" /MACHINE:X86 Debug\main.obj
-         LineIntersect.vcxproj -> Z:\CSCI 562\LineIntersect\Debug\LineIntersect.exe
-     1>Done Building Project "Z:\CSCI 562\LineIntersect\LineIntersect\LineIntersect.vcxproj" (Build target(s)).
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Stuart\School\CSM Spring 15\CSCI 562\LineIntersect\Debug\LineIntersect.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Stuart\School\CSM Spring 15\CSCI 562\LineIntersect\Debug\LineIntersect.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Stuart\School\CSM Spring 15\CSCI 562\LineIntersect\Debug\LineIntersect.lib" /MACHINE:X86 Debug\main.obj
+         LineIntersect.vcxproj -> C:\Users\Stuart\School\CSM Spring 15\CSCI 562\LineIntersect\Debug\LineIntersect.exe
+     1>Done Building Project "C:\Users\Stuart\School\CSM Spring 15\CSCI 562\LineIntersect\LineIntersect\LineIntersect.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:01.18
+Time Elapsed 00:00:01.00

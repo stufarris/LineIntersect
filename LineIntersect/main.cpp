@@ -22,7 +22,7 @@ void testTree();
 int main()
 {
 	
-	testTree();
+	//testTree();
 	//generateRandomSegments(10, pointQueue);
 	//printQueue(pointQueue);
 
@@ -113,8 +113,11 @@ void findIntersections(){
 		if (currentPoint->type == Point::END_POINT){
 			//if left endpoint add segment to avl
 			if (sweepLine == currentPoint->parentSegment->leftPoint->x){
+				//insert the segment with the endpoint into the active segment BST
 				activeSegments.insert(root, currentPoint->parentSegment, sweepLine);
 				//check successor and predecessor for intersections
+				checkIntersect(currentPoint->parentSegment, activeSegments.findSuccessor(root,currentPoint->parentSegment,sweepLine)->s, pointQueue, intersectionQueue);
+				checkIntersect(currentPoint->parentSegment, activeSegments.findPred(root, currentPoint->parentSegment, sweepLine)->s, pointQueue, intersectionQueue);
 			}
 			//if right endpoint remove segment from avl
 			else{
@@ -124,7 +127,7 @@ void findIntersections(){
 		}
 		//else if intersection
 		else{
-			//switch segments
+			//switch segments check new neighbors for intersections
 		}
 		pointQueue.pop();
 	}
@@ -157,6 +160,10 @@ void testTree(){
 	root = tree.insert(root, s10, 2.0);
 
 	tree.display(root, 1);
-	avl_node* succesor = tree.findSuccessor(root, s0, 2.0);
+	avl_node* succesor = tree.findSuccessor(root, s8, 2.0);
+	avl_node* pred = tree.findPred(root, s8, 2.0);
+	cout << "Successor: ";
 	printSegment(succesor->s);
+	cout << "Predecessor: ";
+	printSegment(pred->s);
 }
