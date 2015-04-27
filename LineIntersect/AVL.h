@@ -41,6 +41,7 @@ class avlTree
 		avl_node* findSegment(avl_node*, Segment*, double);
 		avl_node* findSuccessor(avl_node*, Segment*, double);
 		avl_node* findPred(avl_node*, Segment*, double);
+		Segment** swapSegments(Segment*, Segment*, double, priority_queue<Point*, vector<Point*>, struct compare>& priorityQ, priority_queue<Point*, vector<Point*>, struct compare>& intersectionQ);
 		void deleteSegment(Segment*, double);
 		void deleteSegmentInternal(avl_node*, bool, double xValue);
 		void generateRandomNode(double);
@@ -502,6 +503,41 @@ void avlTree::generateRandomNode(double xValue){
 	cout << r << endl;
 	root = insert(root, new Segment(0.0, r, 5.0, r) , xValue);
 	cout << "inserted" << endl;
+}
+
+Segment** avlTree::swapSegments(Segment* s1, Segment* s2, double xValue, priority_queue<Point*, vector<Point*>, struct compare>& priorityQ, priority_queue<Point*, vector<Point*>, struct compare>& intersectionQ){
+	avl_node* successor;
+	avl_node* predecessor;
+	avl_node* s1Node;
+	avl_node* s2Node;
+	Segment* toCheck[4];
+	//s1 is higher
+	if (!compare(s1, s2, xValue)){
+		successor = findSuccessor(root, s1, xValue);
+		predecessor = findPred(root, s2, xValue);
+		s1Node = findSegment(root, s1, xValue);
+		s2Node = findSegment(root, s2, xValue);
+		s1Node->s = s2;
+		s2Node->s = s1;
+		toCheck[0] = successor->s;
+		toCheck[1] = s2;
+		toCheck[2] = predecessor->s;
+		toCheck[3] = s1;
+	}
+	//s2 is higher
+	else{
+		successor = findSuccessor(root, s2, xValue);
+		predecessor = findPred(root, s1, xValue);
+		s1Node = findSegment(root, s1, xValue);
+		s2Node = findSegment(root, s2, xValue);
+		s1Node->s = s2;
+		s2Node->s = s1;
+		toCheck[0] = successor->s;
+		toCheck[1] = s1;
+		toCheck[2] = predecessor->s;
+		toCheck[3] = s2;
+	}
+	return toCheck;
 }
 
 avl_node* avlTree::findSuccessor(avl_node* root, Segment* seg, double xValue){

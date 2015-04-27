@@ -14,6 +14,7 @@ struct compare
 
 void printSegment(Segment* s);
 void generateRandomSegments(int numSegments, priority_queue<Point*, vector<Point*>, struct compare>&);
+void generateSegments(priority_queue<Point*, vector<Point*>, struct compare>&);
 void printQueue(priority_queue<Point*, vector<Point*>, struct compare>&);
 void checkIntersect(Segment*, Segment*, priority_queue<Point*, vector<Point*>, struct compare>&, priority_queue<Point*, vector<Point*>, struct compare>&);
 void findIntersections();
@@ -69,6 +70,24 @@ void generateRandomSegments(int numSegments, priority_queue<Point*, vector<Point
 	return;
 }
 
+void generateSegments(priority_queue<Point*, vector<Point*>, struct compare>& priorityQ){
+	Segment* s0 = new Segment(0.0, 0.0, 3.0, 3.0);
+	Segment* s1 = new Segment(1.0, 2.0, 2.0, 1.0);
+	priorityQ.push(s0->leftPoint);
+	priorityQ.push(s0->rightPoint);
+	priorityQ.push(s1->leftPoint);
+	priorityQ.push(s1->rightPoint);
+	//Segment* s2 = new Segment(0.0, 2.0, 5.0, 2.0);
+	//Segment* s3 = new Segment(0.0, 3.0, 5.0, 3.0);
+	//Segment* s4 = new Segment(0.0, 4.0, 5.0, 4.0);
+	//Segment* s5 = new Segment(0.0, 5.0, 5.0, 5.0);
+	//Segment* s6 = new Segment(0.0, 6.0, 5.0, 6.0);
+	//Segment* s7 = new Segment(0.0, 7.0, 5.0, 7.0);
+	//Segment* s8 = new Segment(0.0, 8.0, 5.0, 8.0);
+	//Segment* s9 = new Segment(0.0, 9.0, 5.0, 9.0);
+	//Segment* s10 = new Segment(0.0, 10.0, 5.0, 10.0);
+}
+
 void checkIntersect(Segment* s1, Segment* s2, priority_queue<Point*, vector<Point*>, struct compare>& priorityQ, priority_queue<Point*, vector<Point*>, struct compare>& intersectionQ){
 	double x1, y1, x2, y2, x3, y3, x4, y4, ma, mb, xInt, yInt;
 	x1 = s1->leftPoint->x;
@@ -103,7 +122,8 @@ void findIntersections(){
 	priority_queue<Point*, vector<Point*>, compare> pointQueue;
 	priority_queue<Point*, vector<Point*>, compare> intersectionQueue;
 	double sweepLine = 0.0;
-	generateRandomSegments(10, pointQueue);
+	//generateRandomSegments(10, pointQueue);
+	generateSegments(pointQueue);
 	Point* currentPoint;
 
 	while (!pointQueue.empty()){
@@ -116,13 +136,22 @@ void findIntersections(){
 				//insert the segment with the endpoint into the active segment BST
 				activeSegments.insert(root, currentPoint->parentSegment, sweepLine);
 				//check successor and predecessor for intersections
-				checkIntersect(currentPoint->parentSegment, activeSegments.findSuccessor(root,currentPoint->parentSegment,sweepLine)->s, pointQueue, intersectionQueue);
-				checkIntersect(currentPoint->parentSegment, activeSegments.findPred(root, currentPoint->parentSegment, sweepLine)->s, pointQueue, intersectionQueue);
+				if (activeSegments.findSuccessor(root, currentPoint->parentSegment, sweepLine) != NULL){
+					checkIntersect(currentPoint->parentSegment, activeSegments.findSuccessor(root, currentPoint->parentSegment, sweepLine)->s, pointQueue, intersectionQueue);
+				}
+				if (activeSegments.findPred(root, currentPoint->parentSegment, sweepLine) != NULL){
+					checkIntersect(currentPoint->parentSegment, activeSegments.findPred(root, currentPoint->parentSegment, sweepLine)->s, pointQueue, intersectionQueue);
+				}
 			}
 			//if right endpoint remove segment from avl
 			else{
+				avl_node* successor = activeSegments.findSuccessor(root, currentPoint->parentSegment, sweepLine);
+				avl_node* predecessor = activeSegments.findPred(root, currentPoint->parentSegment, sweepLine);
 				activeSegments.deleteSegment(currentPoint->parentSegment, sweepLine);
 				//check new neighbors for intersection
+				if (successor != NULL && predecessor != NULL){
+					checkIntersect(successor->s, predecessor->s, pointQueue, intersectionQueue);
+				}			
 			}
 		}
 		//else if intersection
