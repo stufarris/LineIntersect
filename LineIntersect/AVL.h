@@ -506,6 +506,7 @@ void avlTree::generateRandomNode(double xValue){
 avl_node* avlTree::findSuccessor(avl_node* root, Segment* seg, double xValue){
 	avl_node* baseNode = findSegment(root, seg, xValue);
 	avl_node* currentNode;
+	queue<char> directions;
 	//has right tree
 	if (baseNode->right != NULL){
 		currentNode = baseNode->right;
@@ -516,7 +517,64 @@ avl_node* avlTree::findSuccessor(avl_node* root, Segment* seg, double xValue){
 	}
 	//does not have right subtree
 	else{
-		//left child
-		//right child
+		currentNode = root;
+		while (true){
+			if (currentNode == NULL){
+				cout << "not found";
+				break;
+			}
+			else if (currentNode->s == seg){
+				break;
+			}
+			else if (!compare(seg, currentNode->s, xValue)){
+				directions.push('r');
+				currentNode = currentNode->right;
+			}
+			else if (compare(seg, currentNode->s, xValue)){
+				directions.push('l');
+				currentNode = currentNode->left;
+			}
+		}
+		//is left child
+		if (directions.back() == 'l'){
+			int size = directions.size();
+			currentNode = root;
+			for (int i = 0; i < size - 1; i++){				
+				if (directions.front() == 'r'){
+					currentNode = currentNode->right;
+				}
+				else if (directions.front() == 'l'){
+					currentNode = currentNode->left;
+				}
+				directions.pop();
+			}
+			return currentNode;
+		}
+		//is right child
+		else if (directions.back() == 'r'){
+			int size = directions.size();
+			int lastRight = NULL;
+			queue<char> directionsCopy = directions;
+			currentNode = root;
+			for (int i = 0; i < size - 1; i++){
+				if (directionsCopy.front() == 'l'){
+					lastRight = i;
+				}
+				directionsCopy.pop();
+			}
+			if (lastRight == NULL){
+				return NULL;
+			}
+			for (int j = 0; j < lastRight; j++){
+				if (directions.front() == 'r'){
+					currentNode = currentNode->right;
+				}
+				else if (directions.front() == 'l'){
+					currentNode = currentNode->left;
+				}
+				directions.pop();
+			}
+			return currentNode;
+		}
 	}
 }

@@ -16,53 +16,13 @@ void printSegment(Segment* s);
 void generateRandomSegments(int numSegments, priority_queue<Point*, vector<Point*>, struct compare>&);
 void printQueue(priority_queue<Point*, vector<Point*>, struct compare>&);
 void checkIntersect(Segment*, Segment*, priority_queue<Point*, vector<Point*>, struct compare>&, priority_queue<Point*, vector<Point*>, struct compare>&);
-
+void findIntersections();
+void testTree();
 
 int main()
 {
-	avlTree activeSegments;
-	priority_queue<Point*, vector<Point*>, compare> pointQueue;
-	priority_queue<Point*, vector<Point*>, compare> intersectionQueue;
-	double sweepLine = 0.0;
-	generateRandomSegments(10, pointQueue);
-	Point* currentPoint;
-
-	while (!pointQueue.empty()){
-		currentPoint = pointQueue.top();
-		sweepLine = currentPoint->x;
-		//if endpoint
-		if (currentPoint->type == Point::END_POINT){
-			//if left endpoint add segment to avl
-			if (sweepLine == currentPoint->parentSegment->leftPoint->x){
-				activeSegments.insert(root, currentPoint->parentSegment, sweepLine);
-				//check successor and predecessor for intersections
-			}
-			//if right endpoint remove segment from avl
-			else{
-				activeSegments.deleteSegment(currentPoint->parentSegment, sweepLine);
-				//check new neighbors for intersection
-			}
-		}
-		//else if intersection
-		else{
-			//switch segments
-		}
-		pointQueue.pop();
-	}
-
-	Segment* s1 = new Segment(0.0, 2.0, 5.0, 2.0);
-	Segment* s2 = new Segment(0.0, 20.0, 20.0, 0.0);
-	pointQueue.push(s1->leftPoint);
-	pointQueue.push(s1->rightPoint);
-	pointQueue.push(s2->leftPoint);
-	pointQueue.push(s2->rightPoint);
-
-	printQueue(pointQueue);
-
-	cout << endl;
-	checkIntersect(s1, s2, pointQueue, intersectionQueue);
-
-	printQueue(pointQueue);
+	
+	testTree();
 	//generateRandomSegments(10, pointQueue);
 	//printQueue(pointQueue);
 
@@ -136,4 +96,67 @@ void checkIntersect(Segment* s1, Segment* s2, priority_queue<Point*, vector<Poin
 	}
 	return;
 
+}
+
+void findIntersections(){
+	avlTree activeSegments;
+	priority_queue<Point*, vector<Point*>, compare> pointQueue;
+	priority_queue<Point*, vector<Point*>, compare> intersectionQueue;
+	double sweepLine = 0.0;
+	generateRandomSegments(10, pointQueue);
+	Point* currentPoint;
+
+	while (!pointQueue.empty()){
+		currentPoint = pointQueue.top();
+		sweepLine = currentPoint->x;
+		//if endpoint
+		if (currentPoint->type == Point::END_POINT){
+			//if left endpoint add segment to avl
+			if (sweepLine == currentPoint->parentSegment->leftPoint->x){
+				activeSegments.insert(root, currentPoint->parentSegment, sweepLine);
+				//check successor and predecessor for intersections
+			}
+			//if right endpoint remove segment from avl
+			else{
+				activeSegments.deleteSegment(currentPoint->parentSegment, sweepLine);
+				//check new neighbors for intersection
+			}
+		}
+		//else if intersection
+		else{
+			//switch segments
+		}
+		pointQueue.pop();
+	}
+}
+
+void testTree(){
+	avlTree tree;
+	Segment* s0 = new Segment(0.0, 0.0, 5.0, 0.0);
+	Segment* s1 = new Segment(0.0, 1.0, 5.0, 1.0);
+	Segment* s2 = new Segment(0.0, 2.0, 5.0, 2.0);
+	Segment* s3 = new Segment(0.0, 3.0, 5.0, 3.0);
+	Segment* s4 = new Segment(0.0, 4.0, 5.0, 4.0);
+	Segment* s5 = new Segment(0.0, 5.0, 5.0, 5.0);
+	Segment* s6 = new Segment(0.0, 6.0, 5.0, 6.0);
+	Segment* s7 = new Segment(0.0, 7.0, 5.0, 7.0);
+	Segment* s8 = new Segment(0.0, 8.0, 5.0, 8.0);
+	Segment* s9 = new Segment(0.0, 9.0, 5.0, 9.0);
+	Segment* s10 = new Segment(0.0, 10.0, 5.0, 10.0);
+
+	root = tree.insert(root, s0, 2.0);
+	root = tree.insert(root, s1, 2.0);
+	root = tree.insert(root, s2, 2.0);
+	root = tree.insert(root, s3, 2.0);
+	root = tree.insert(root, s4, 2.0);
+	root = tree.insert(root, s5, 2.0);
+	root = tree.insert(root, s6, 2.0);
+	root = tree.insert(root, s7, 2.0);
+	root = tree.insert(root, s8, 2.0);
+	root = tree.insert(root, s9, 2.0);
+	root = tree.insert(root, s10, 2.0);
+
+	tree.display(root, 1);
+	avl_node* succesor = tree.findSuccessor(root, s0, 2.0);
+	printSegment(succesor->s);
 }
