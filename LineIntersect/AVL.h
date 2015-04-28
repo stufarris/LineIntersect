@@ -41,10 +41,10 @@ class avlTree
 		avl_node* findSegment(avl_node*, Segment*, double);
 		avl_node* findSuccessor(avl_node*, Segment*, double);
 		avl_node* findPred(avl_node*, Segment*, double);
-		Segment** swapSegments(Segment*, Segment*, double, priority_queue<Point*, vector<Point*>, struct compare>& priorityQ, priority_queue<Point*, vector<Point*>, struct compare>& intersectionQ);
+		Segment** swapSegments(Segment*, Segment*, double);
 		void deleteSegment(Segment*, double);
 		void deleteSegmentInternal(avl_node*, bool, double xValue);
-		void generateRandomNode(double);
+		//void generateRandomNode(double);
         void display(avl_node *, int);
         void inorder(avl_node *);
         void preorder(avl_node *);
@@ -239,13 +239,25 @@ void avlTree::postorder(avl_node *tree)
 bool avlTree::compare(Segment* s1, Segment* s2, double xValue){
 	double yValue1 = (s1->rightPoint->y - s1->leftPoint->y)/(s1->rightPoint->x - s1->leftPoint->x)*xValue + s1->leftPoint->y - (s1->rightPoint->y - s1->leftPoint->y)/(s1->rightPoint->x - s1->leftPoint->x)*s1->leftPoint->x;
 	double yValue2 = (s2->rightPoint->y - s2->leftPoint->y)/(s2->rightPoint->x - s2->leftPoint->x)*xValue + s2->leftPoint->y - (s2->rightPoint->y - s2->leftPoint->y)/(s2->rightPoint->x - s2->leftPoint->x)*s2->leftPoint->x;
+	long yValue1Long = (long)(yValue1*1000.0);
+	long yValue2Long = (long)(yValue2*1000.0);
 	//cout << yValue1 << endl;
 	//cout << yValue2 << endl;
-	if(yValue1 >= yValue2){
+	if(yValue1Long > yValue2Long){
 		return 0;
 	}
-	else{
+	else if(yValue1Long < yValue2Long){
 		return 1;
+	}
+	else{
+		double s1Slope = (s1->rightPoint->y - s1->leftPoint->y) / (s1->rightPoint->x - s1->leftPoint->x);
+		double s2Slope = (s2->rightPoint->y - s2->leftPoint->y) / (s2->rightPoint->x - s2->leftPoint->x);
+		if (s1Slope < s2Slope){
+			return 0;
+		}
+		else{
+			return 1;
+		}
 	}
 }
 
@@ -498,30 +510,44 @@ void avlTree::deleteSegmentInternal(avl_node* parent, bool direction, double xVa
 	return;
 }
 
-void avlTree::generateRandomNode(double xValue){
+/*void avlTree::generateRandomNode(double xValue){
 	double r = rand() % 100;
 	cout << r << endl;
 	root = insert(root, new Segment(0.0, r, 5.0, r) , xValue);
 	cout << "inserted" << endl;
-}
+}*/
 
-Segment** avlTree::swapSegments(Segment* s1, Segment* s2, double xValue, priority_queue<Point*, vector<Point*>, struct compare>& priorityQ, priority_queue<Point*, vector<Point*>, struct compare>& intersectionQ){
+Segment** avlTree::swapSegments(Segment* s1, Segment* s2, double xValue){
 	avl_node* successor;
 	avl_node* predecessor;
 	avl_node* s1Node;
 	avl_node* s2Node;
+	Segment* temp;
 	Segment* toCheck[4];
+
 	//s1 is higher
-	if (!compare(s1, s2, xValue)){
+	if (!compare(s1,s2,xValue)){
 		successor = findSuccessor(root, s1, xValue);
 		predecessor = findPred(root, s2, xValue);
 		s1Node = findSegment(root, s1, xValue);
 		s2Node = findSegment(root, s2, xValue);
+		temp = s1Node->s;
 		s1Node->s = s2;
-		s2Node->s = s1;
-		toCheck[0] = successor->s;
+		s2Node->s = temp;
+		if (successor != NULL){
+			toCheck[0] = successor->s;
+		}
+		else{
+			toCheck[0] = NULL;
+		}
 		toCheck[1] = s2;
-		toCheck[2] = predecessor->s;
+
+		if (predecessor != NULL){
+			toCheck[2] = predecessor->s;
+		}
+		else{
+			toCheck[2] = NULL;
+		}
 		toCheck[3] = s1;
 	}
 	//s2 is higher
@@ -530,11 +556,23 @@ Segment** avlTree::swapSegments(Segment* s1, Segment* s2, double xValue, priorit
 		predecessor = findPred(root, s1, xValue);
 		s1Node = findSegment(root, s1, xValue);
 		s2Node = findSegment(root, s2, xValue);
+		temp = s1Node->s;
 		s1Node->s = s2;
-		s2Node->s = s1;
-		toCheck[0] = successor->s;
+		s2Node->s = temp;
+		if (successor != NULL){
+			toCheck[0] = successor->s;
+		}
+		else{
+			toCheck[0] = NULL;
+		}
 		toCheck[1] = s1;
-		toCheck[2] = predecessor->s;
+
+		if (predecessor != NULL){
+			toCheck[2] = predecessor->s;
+		}
+		else{
+			toCheck[2] = NULL;
+		}
 		toCheck[3] = s2;
 	}
 	return toCheck;
@@ -542,6 +580,10 @@ Segment** avlTree::swapSegments(Segment* s1, Segment* s2, double xValue, priorit
 
 avl_node* avlTree::findSuccessor(avl_node* root, Segment* seg, double xValue){
 	avl_node* baseNode = findSegment(root, seg, xValue);
+	if (baseNode == NULL){
+		cout << "error";
+	}
+	baseNode = findSegment(root, seg, xValue);
 	avl_node* currentNode;
 	queue<char> directions;
 	//has right tree
@@ -571,6 +613,10 @@ avl_node* avlTree::findSuccessor(avl_node* root, Segment* seg, double xValue){
 				directions.push('l');
 				currentNode = currentNode->left;
 			}
+		}
+		//is root with no right tree
+		if (directions.empty()){
+			return NULL;
 		}
 		//is left child
 		if (directions.back() == 'l'){
@@ -618,6 +664,11 @@ avl_node* avlTree::findSuccessor(avl_node* root, Segment* seg, double xValue){
 
 avl_node* avlTree::findPred(avl_node* root, Segment* seg, double xValue){
 	avl_node* baseNode = findSegment(root, seg, xValue);
+	if (baseNode == NULL){
+		display(root, 1);
+		cout << "error";
+	}
+	baseNode = findSegment(root, seg, xValue);
 	avl_node* currentNode;
 	queue<char> directions;
 	//has left tree
@@ -647,6 +698,10 @@ avl_node* avlTree::findPred(avl_node* root, Segment* seg, double xValue){
 				directions.push('l');
 				currentNode = currentNode->left;
 			}
+		}
+		//is root with no right left
+		if (directions.empty()){
+			return NULL;
 		}
 		//is right child
 		if (directions.back() == 'r'){
