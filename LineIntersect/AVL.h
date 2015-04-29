@@ -42,8 +42,8 @@ class avlTree
 		avl_node* findSuccessor(avl_node*, Segment*, double);
 		avl_node* findPred(avl_node*, Segment*, double);
 		Segment** swapSegments(Segment*, Segment*, double);
-		void deleteSegment(Segment*, double);
-		void deleteSegmentInternal(avl_node*, bool, double xValue);
+		avl_node* deleteSegment(avl_node*, Segment*, double);
+		avl_node* deleteSegmentInternal(avl_node*, bool, double xValue);
 		//void generateRandomNode(double);
         void display(avl_node *, int);
         void inorder(avl_node *);
@@ -94,6 +94,7 @@ avl_node *avlTree::rr_rotation(avl_node *parent)
     temp->left = parent;
     return temp;
 }
+
 /*
  * Left- Left Rotation
  */
@@ -165,7 +166,6 @@ avl_node *avlTree::insert(avl_node *root, Segment* seg, double xValue)
         root->data = value;
         root->left = NULL;
         root->right = NULL;
-		cout << "segment added" << endl;
         return root;
     }
     else if (compare(seg,root->s,xValue))
@@ -212,6 +212,7 @@ void avlTree::inorder(avl_node *tree)
     cout<<tree->data<<"  ";
     inorder (tree->right);
 }
+
 /*
  * Preorder Traversal of AVL Tree
  */
@@ -265,7 +266,8 @@ bool avlTree::compare(Segment* s1, Segment* s2, double xValue){
 avl_node* avlTree::findSegment(avl_node *root, Segment* seg, double xValue){
 	
 	if (root == NULL){
-		cout << "Not found";
+		printf("(%.4lf, %.4lf)-(%.4lf, %.4lf)", seg->leftPoint->x, seg->leftPoint->y, seg->rightPoint->x, seg->rightPoint->y);
+		cout << " Not found";
 		return NULL;
 	}
 	else if (root->s == seg){
@@ -280,57 +282,58 @@ avl_node* avlTree::findSegment(avl_node *root, Segment* seg, double xValue){
 
 }
 
-void avlTree::deleteSegment(Segment* seg, double xValue){
-	avl_node* parentOfDeleteNode = root;
-	while (true){
+avl_node* avlTree::deleteSegment(avl_node* parentOfDeleteNode, Segment* seg, double xValue){
+	//avl_node* parentOfDeleteNode = root;
 		if (parentOfDeleteNode == NULL){
-			cout << "not found: could not delete" << endl;
-			return;
+			cout << "not found: could not delete: xValue:" << xValue <<endl;
+			findSegment(root, seg, xValue);
+			return NULL;
 		}
+		//node to be deleted is root
 		else if (parentOfDeleteNode == root && parentOfDeleteNode->s == seg){
 			if (parentOfDeleteNode->left == NULL && parentOfDeleteNode->right == NULL){
 				delete parentOfDeleteNode;
 				parentOfDeleteNode = NULL;
-				root = NULL;
-				return;
+				//root = NULL;
+				return parentOfDeleteNode;
 			}
 			//one child to left
 			else if (parentOfDeleteNode->left != NULL && parentOfDeleteNode->right == NULL){
-				avl_node* temp = parentOfDeleteNode;
-				root = parentOfDeleteNode->left;
-				delete temp;
-				temp = NULL;
-				root = balance(root);
-				return;
+				//avl_node* temp = parentOfDeleteNode;
+				parentOfDeleteNode = parentOfDeleteNode->left;
+				//delete temp;
+				//temp = NULL;
+				parentOfDeleteNode = balance(parentOfDeleteNode);
+				return parentOfDeleteNode;
 			}
 			//one child to right
 			else if (parentOfDeleteNode->right != NULL && parentOfDeleteNode->left == NULL){
-				avl_node* temp = parentOfDeleteNode;
-				root = parentOfDeleteNode->right;
-				delete temp;
-				temp = NULL;
-				root = balance(root);
-				return;
+				//avl_node* temp = parentOfDeleteNode;
+				parentOfDeleteNode = parentOfDeleteNode->right;
+				//delete temp;
+				//temp = NULL;
+				parentOfDeleteNode = balance( parentOfDeleteNode);
+				return parentOfDeleteNode;
 			}
 			//two children
 			else if (parentOfDeleteNode->right != NULL && parentOfDeleteNode->left != NULL){
 				avl_node* temp = parentOfDeleteNode->right;
 				if(temp->left == NULL){
 					root->s = temp->s;
-					delete root->right;
-					root->right = NULL;
+					//delete root->right;
+					root->right = temp->right;
 					root = balance(root);
-					return;
+					return root;
 				}
 				else{
 					while (temp->left->left != NULL){
 						temp = temp->left;
 					}
 					root->s = temp->left->s;
-					delete temp->left;
-					temp->left = NULL;
+					//delete temp->left;
+					temp->left = temp->left->right;
 					root = balance(root);
-					return;
+					return root;
 				}
 				/*while (temp->left != NULL){
 					temp = temp->left;
@@ -340,88 +343,83 @@ void avlTree::deleteSegment(Segment* seg, double xValue){
 				delete temp;
 				temp = NULL;*/
 			}
-			return;
 		}
 		else if (parentOfDeleteNode->left != NULL && parentOfDeleteNode->left->s == seg){
-			deleteSegmentInternal(parentOfDeleteNode, 0, xValue);
-			return;
+			parentOfDeleteNode = deleteSegmentInternal(parentOfDeleteNode, 0, xValue);
+			return parentOfDeleteNode;
 		}
 		else if (parentOfDeleteNode->right != NULL && parentOfDeleteNode->right->s == seg){
-			deleteSegmentInternal(parentOfDeleteNode, 1, xValue);
-			return;
+			parentOfDeleteNode = deleteSegmentInternal(parentOfDeleteNode, 1, xValue);
+			return parentOfDeleteNode;
 		}
-		else if (compare(seg, root->s, xValue)){
-			parentOfDeleteNode = parentOfDeleteNode->left;
+		else if (compare(seg, parentOfDeleteNode->s, xValue)){
+			parentOfDeleteNode->left = deleteSegment(parentOfDeleteNode->left, seg, xValue);
 		}
-		else if (!compare(seg, root->s, xValue)){
-			parentOfDeleteNode = parentOfDeleteNode->right;
+		else if (!compare(seg, parentOfDeleteNode->s, xValue)){
+			parentOfDeleteNode->right = deleteSegment(parentOfDeleteNode->right, seg, xValue);
 		}
-	}
+		return parentOfDeleteNode;
 }
 
-void avlTree::deleteSegmentInternal(avl_node* parent, bool direction, double xValue){
+avl_node* avlTree::deleteSegmentInternal(avl_node* parent, bool direction, double xValue){
 	//0 is left 1 is right
 	//left
 	if (!direction){
 		//no children
 		if (parent->left->left == NULL && parent->left->right == NULL){
-			delete parent->left;
+			//delete parent->left;
 			parent->left = NULL;
 			if (parent == root){
-				root = balance(parent);
+				parent = balance(parent);
 			}
 			else{
 				parent = balance(parent);
 			}
-			return;
+			return parent;
 		}
 		//one child to left
 		else if (parent->left->left != NULL && parent->left->right == NULL){
 			avl_node* temp = parent->left;
 			parent->left = parent->left->left;
 			if (parent == root){
-				root = balance(parent);
+				parent = balance(parent);
 			}
 			else{
 				parent = balance(parent);
 			}
-			delete temp;
-			temp = NULL;
-			return;
+			return parent;
 		}
 		//one child to right
 		else if (parent->left->right != NULL && parent->left->left == NULL){
 			avl_node* temp = parent->left;
 			parent->left = parent->left->right;
 			if (parent == root){
-				root = balance(parent);
+				parent = balance(parent);
 			}
 			else{
 				parent = balance(parent);
 			}
-			delete temp;
-			temp = NULL;
-			return;
+			return parent;
 		}
 		//two children
 		else if (parent->left->right != NULL && parent->left->left != NULL){
 			avl_node* temp = parent->left->right;
 			if (temp->left == NULL){
 				parent->left->s = temp->s;
-				delete parent->left->right;
-				parent->left->right = NULL;
+				//delete parent->left->right;
+				parent->left->right = parent->left->right->right;
 				parent = balance(parent);
-				return;
+				return parent;
 			}
 			else{
 				while (temp->left->left != NULL){
 					temp = temp->left;
 				}
 				parent->left->s = temp->left->s;
-				delete temp->left;
-				temp->left = NULL;
+				//delete temp->left;
+				temp->left = temp->left->right;
 				parent = balance(parent);
-
+				return parent;
 			}
 			/*while (temp->left != NULL){
 				temp = temp->left;
@@ -441,60 +439,60 @@ void avlTree::deleteSegmentInternal(avl_node* parent, bool direction, double xVa
 	else if (direction){
 		//no children
 		if (parent->right->left == NULL && parent->right->right == NULL){
-			delete parent->right;
+			//delete parent->right;
 			parent->right = NULL;
 			if (parent == root){
-				root = balance(parent);
+				parent = balance(parent);
 			}
 			else{
 				parent = balance(parent);
 			}
+			return parent;
 		}
 		//one child to left
 		else if (parent->right->left != NULL && parent->right->right == NULL){
 			avl_node* temp = parent->right;
 			parent->right = parent->right->left;
 			if (parent == root){
-				root = balance(parent);
+				parent = balance(parent);
 			}
 			else{
 				parent = balance(parent);
 			}
-			delete temp;
-			temp = NULL;
+			return parent;
 		}
 		//one child to right
 		else if (parent->right->right != NULL && parent->right->left == NULL){
 			avl_node* temp = parent->right;
 			parent->right = parent->right->right;
 			if (parent == root){
-				root = balance(parent);
+				parent = balance(parent);
 			}
 			else{
 				parent = balance(parent);
 			}
-			delete temp;
-			temp = NULL;
+			return parent;
 		}
 		//two children
 		else if (parent->right->right != NULL && parent->right->left != NULL){
 			avl_node* temp = parent->right->right;
 			if (temp->left == NULL){
 				parent->right->s = temp->s;
-				delete parent->right->right;
-				parent->right->right = NULL;
+				//delete parent->right->right;
+				parent->right->right = parent->right->right->right;
 				parent = balance(parent);
-				return;
+				return parent;
+
 			}
 			else{
 				while (temp->left->left != NULL){
 					temp = temp->left;
 				}
 				parent->right->s = temp->left->s;
-				delete temp->left;
-				temp->left = NULL;
+				//delete temp->left;
+				temp->left = temp->left->right;;
 				parent = balance(parent);
-
+				return parent;
 			}
 		}
 		/*else if (parent->right->right != NULL && parent->right->left != NULL){
@@ -513,7 +511,6 @@ void avlTree::deleteSegmentInternal(avl_node* parent, bool direction, double xVa
 			temp = NULL;
 		}*/
 	}
-	return;
 }
 
 /*void avlTree::generateRandomNode(double xValue){
@@ -587,7 +584,7 @@ Segment** avlTree::swapSegments(Segment* s1, Segment* s2, double xValue){
 avl_node* avlTree::findSuccessor(avl_node* root, Segment* seg, double xValue){
 	avl_node* baseNode = findSegment(root, seg, xValue);
 	if (baseNode == NULL){
-		display(root, 1);
+		//display(root, 1);
 		cout << "error";
 	}
 	baseNode = findSegment(root, seg, xValue);
@@ -672,7 +669,7 @@ avl_node* avlTree::findSuccessor(avl_node* root, Segment* seg, double xValue){
 avl_node* avlTree::findPred(avl_node* root, Segment* seg, double xValue){
 	avl_node* baseNode = findSegment(root, seg, xValue);
 	if (baseNode == NULL){
-		display(root, 1);
+		//display(root, 1);
 		cout << "error";
 	}
 	baseNode = findSegment(root, seg, xValue);
