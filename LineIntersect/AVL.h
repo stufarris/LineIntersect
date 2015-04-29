@@ -165,6 +165,7 @@ avl_node *avlTree::insert(avl_node *root, Segment* seg, double xValue)
         root->data = value;
         root->left = NULL;
         root->right = NULL;
+		cout << "segment added" << endl;
         return root;
     }
     else if (compare(seg,root->s,xValue))
@@ -283,7 +284,7 @@ void avlTree::deleteSegment(Segment* seg, double xValue){
 	avl_node* parentOfDeleteNode = root;
 	while (true){
 		if (parentOfDeleteNode == NULL){
-			cout << "not found" << endl;
+			cout << "not found: could not delete" << endl;
 			return;
 		}
 		else if (parentOfDeleteNode == root && parentOfDeleteNode->s == seg){
@@ -300,6 +301,7 @@ void avlTree::deleteSegment(Segment* seg, double xValue){
 				delete temp;
 				temp = NULL;
 				root = balance(root);
+				return;
 			}
 			//one child to right
 			else if (parentOfDeleteNode->right != NULL && parentOfDeleteNode->left == NULL){
@@ -308,6 +310,7 @@ void avlTree::deleteSegment(Segment* seg, double xValue){
 				delete temp;
 				temp = NULL;
 				root = balance(root);
+				return;
 			}
 			//two children
 			else if (parentOfDeleteNode->right != NULL && parentOfDeleteNode->left != NULL){
@@ -370,6 +373,7 @@ void avlTree::deleteSegmentInternal(avl_node* parent, bool direction, double xVa
 			else{
 				parent = balance(parent);
 			}
+			return;
 		}
 		//one child to left
 		else if (parent->left->left != NULL && parent->left->right == NULL){
@@ -383,6 +387,7 @@ void avlTree::deleteSegmentInternal(avl_node* parent, bool direction, double xVa
 			}
 			delete temp;
 			temp = NULL;
+			return;
 		}
 		//one child to right
 		else if (parent->left->right != NULL && parent->left->left == NULL){
@@ -396,6 +401,7 @@ void avlTree::deleteSegmentInternal(avl_node* parent, bool direction, double xVa
 			}
 			delete temp;
 			temp = NULL;
+			return;
 		}
 		//two children
 		else if (parent->left->right != NULL && parent->left->left != NULL){
@@ -581,6 +587,7 @@ Segment** avlTree::swapSegments(Segment* s1, Segment* s2, double xValue){
 avl_node* avlTree::findSuccessor(avl_node* root, Segment* seg, double xValue){
 	avl_node* baseNode = findSegment(root, seg, xValue);
 	if (baseNode == NULL){
+		display(root, 1);
 		cout << "error";
 	}
 	baseNode = findSegment(root, seg, xValue);

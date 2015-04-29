@@ -20,12 +20,17 @@ void printQueue(priority_queue<Point*, vector<Point*>, struct compare>);
 void checkIntersect(Segment*, Segment*, priority_queue<Point*, vector<Point*>, struct compare>&, priority_queue<Point*, vector<Point*>, struct compare>&, bool**);
 void findIntersections();
 void testTree();
+void testTree2();
 
 //void printQueue(priority_queue<Point*, vector<Point*>, struct compare>);
 
 int main(){
-	findIntersections();
-	//testTree();
+	/*for (int i = 0; i < 1000; i++){
+		cout << "Trail:" << i << endl;
+		findIntersections();
+	}*/
+	//findIntersections();
+	testTree2();
 	//generateRandomSegments(10, pointQueue);
 	//printQueue(pointQueue);
 
@@ -147,7 +152,7 @@ void findIntersections(){
 	avl_node* predecessor;
 	bool **intersectionCheckArray;
 	intersectionCheckArray = new bool*[NUM_SEGMENTS];
-	for (int i = 0; i < 10; ++i) {
+	for (int i = 0; i < NUM_SEGMENTS; ++i) {
 		intersectionCheckArray[i] = new bool[NUM_SEGMENTS];
 		// each i-th pointer is now pointing to dynamic array (size 10) of actual int values
 	}
@@ -177,14 +182,16 @@ void findIntersections(){
 			//if left endpoint add segment to avl
 			if (sweepLine == currentPoint->parentSegment->leftPoint->x){
 				//insert the segment with the endpoint into the active segment BST
+				cout << "tried to add segment" << endl;
 				root = activeSegments.insert(root, currentPoint->parentSegment, sweepLine);
 				//check successor and predecessor for intersections
-				if (activeSegments.height(root) > 0 && activeSegments.findSuccessor(root, currentPoint->parentSegment, sweepLine) != NULL){
+				if (activeSegments.findSuccessor(root, currentPoint->parentSegment, sweepLine) != NULL){
 					checkIntersect(currentPoint->parentSegment, activeSegments.findSuccessor(root, currentPoint->parentSegment, sweepLine)->s, pointQueue, intersectionQueue, intersectionCheckArray);
 				}
-				if (activeSegments.height(root) > 0 && activeSegments.findPred(root, currentPoint->parentSegment, sweepLine) != NULL){
+				if (activeSegments.findPred(root, currentPoint->parentSegment, sweepLine) != NULL){
 					checkIntersect(currentPoint->parentSegment, activeSegments.findPred(root, currentPoint->parentSegment, sweepLine)->s, pointQueue, intersectionQueue, intersectionCheckArray);
 				}
+				
 			}
 			//if right endpoint remove segment from avl
 			else{
@@ -197,6 +204,7 @@ void findIntersections(){
 					}
 				}		
 				activeSegments.deleteSegment(currentPoint->parentSegment, sweepLine);
+				cout << "segment deleted" << endl;
 			}
 		}
 		//else if intersection
@@ -215,6 +223,7 @@ void findIntersections(){
 			if (check2 != NULL){
 				checkIntersect(check2, check3, pointQueue, intersectionQueue, intersectionCheckArray);
 			}			
+			cout << "segments swapped" << endl;
 		}
 		//checks
 		//cout << endl << "Current x Value: " << sweepLine << endl;
@@ -384,3 +393,46 @@ void findIntersections(){
 		intersectionQueue.push(temp);
 	}
 }*/
+
+void testTree2(){
+	avlTree tree;
+
+	Segment* s0 = new Segment(0.0, 0.0, 3.0, 0.0, 0);
+	Segment* s1 = new Segment(0.0, 1.0, 3.0, 1.0, 1);
+	Segment* s2 = new Segment(0.0, 2.0, 3.0, 2.0, 2);
+	Segment* s3 = new Segment(0.0, 3.0, 3.0, 3.0, 3);
+	Segment* s4 = new Segment(0.0, 4.0, 3.0, 4.0, 4);
+	Segment* s5 = new Segment(0.0, 5.0, 3.0, 5.0, 5);
+	Segment* s6 = new Segment(0.0, 6.0, 3.0, 6.0, 6);
+	Segment* s7 = new Segment(0.0, 7.0, 3.0, 7.0, 7);
+	Segment* s8 = new Segment(0.0, 8.0, 3.0, 8.0, 8);
+	Segment* s9 = new Segment(0.0, 9.0, 3.0, 9.0, 9);
+	Segment* s10 = new Segment(0.0, 10.0, 3.0, 10.0, 10);
+	Segment* s11 = new Segment(0.0, 11.0, 3.0, 11.0, 10);
+	Segment* s12 = new Segment(0.0, 12.0, 3.0, 12.0, 10);
+	Segment* s13 = new Segment(0.0, 13.0, 3.0, 13.0, 10);
+	Segment* s14 = new Segment(0.0, 14.0, 3.0, 14.0, 10);
+
+	root = tree.insert(root, s0, 2.0);
+	root = tree.insert(root, s1, 2.0);
+	root = tree.insert(root, s2, 2.0);
+	root = tree.insert(root, s3, 2.0);
+	root = tree.insert(root, s4, 2.0);
+	root = tree.insert(root, s5, 2.0);
+	root = tree.insert(root, s6, 2.0);
+	root = tree.insert(root, s7, 2.0);
+	root = tree.insert(root, s8, 2.0);
+	root = tree.insert(root, s9, 2.0);
+	root = tree.insert(root, s10, 2.0);
+	root = tree.insert(root, s11, 2.0);
+	root = tree.insert(root, s12, 2.0);
+	root = tree.insert(root, s13, 2.0);
+	root = tree.insert(root, s14, 2.0);
+
+	tree.display(root, 1);
+
+	cout << "deleted s3" << endl;
+	tree.deleteSegment(s3, 2.0);
+	tree.display(root, 1);
+	return;
+}
